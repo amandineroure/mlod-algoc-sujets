@@ -28,5 +28,5 @@ void matrix_print(int64_t mat[][SIZE]) {
         }
 }
 
-/*b. On peut la réutiliser en changeant la taille (SIZE)
+/*b. On peut la réutiliser en changeant la taille (SIZE), et vu qu'on a spécifier qu'une seule dimension, le code est déjà plus globale
 c. l'utilisateur peut saisir la taille au début, ou alor créer une matrice plus grace, la parcourir pour la réduire*/
