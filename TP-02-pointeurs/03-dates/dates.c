@@ -6,17 +6,17 @@
 
 void initializeDate(struct Date* date) {
     printf("Entrez le jour : ");
-    scanf("%d", &date->jour);
+    scanf("%d", &(date->jour)); // pareil que *d.jour, flèche fait référence a l'adresse
     
     printf("Entrez le mois (1-12) : ");
-    scanf("%d", (int *)&date->mois); 
+    scanf("%d", (int *)&date->mois);  // prend un entier et va directemment le stocker dans la case mémoire
     
     printf("Entrez l'annee : ");
     scanf("%d", &date->annee);
 }
 
-void afficheDate(const struct Date *date) {
-    printf("Date : %d %d %d\n", &date->jour, (int)&date->mois, &date->annee); // On cast l'enum Mois en int pour l'affichage
+void afficheDate(struct Date* date) {
+    printf("Date : %d %d %d\n", (*date).jour, (*date).mois,(*date).annee); // On cast l'enum Mois en int pour l'affichage
 }
 
 struct Date creerDateParCopie() {
