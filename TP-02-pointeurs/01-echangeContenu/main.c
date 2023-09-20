@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "echangeContenu.h"
+/*gcc main.c .\echangeContenu.c -o main
+./main*/
 
 int main(void)
 {
@@ -7,7 +9,7 @@ int main(void)
 
 	printf ("a = %d\tb = %d\n", a, b);
 
-	// TODO
+	echangeContenu(&a, &b);
 
 	printf ("a et b echanges \n");
 	printf ("a = %d\tb = %d\n", a, b);
