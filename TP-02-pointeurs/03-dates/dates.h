@@ -4,7 +4,7 @@
 
 enum Mois {jan = 1, fev, mars, avr, mai, juin, juil, aout, sept, oct, nov, dec};
 
-struct Date {
+struct Date { //3 cases réservées en memoire
 int jour;
 enum Mois mois;
 int annee;

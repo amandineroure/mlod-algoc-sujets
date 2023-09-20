@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <dates.h>
+#include "dates.h"
+#include <stdlib.h>
 /*gcc -Wall -o dates dates.c
 .\dates.exe*/
 
-void initializeDate(struct Date *date) {
+void initializeDate(struct Date* date) {
     printf("Entrez le jour : ");
     scanf("%d", &date->jour);
     
