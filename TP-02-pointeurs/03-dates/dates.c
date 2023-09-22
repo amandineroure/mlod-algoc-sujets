@@ -33,6 +33,7 @@ struct Date creerDateParCopie() {
     
     return date;
 }
+//copie très lente si on a une structure lourde. Pour allouer une date on en a créé 2
 
 
 struct Date* newDate() {
