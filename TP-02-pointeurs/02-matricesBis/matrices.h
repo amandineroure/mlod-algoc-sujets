@@ -1,7 +1,12 @@
 #pragma once
 #include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#define SIZE 5
-void matrix_print(int64_t mat[][SIZE]);
-void matrix_mult(int64_t matriceResultat[][SIZE], int64_t matrice1[][SIZE], int64_t matrice2[][SIZE]);
+typedef struct {
+  uint16_t nblignes;
+  uint16_t nbcolonnes;
+  int64_t** valeurs;
+}Matrice;
+
+Matrice* creer(int v, int l, int c);
+void initialiserLigne(int v, int l, Matrice* mat);
+Matrice* multiplier(Matrice* A, Matrice* B);
+void matrix_print(Matrice* mat) ;
