@@ -15,6 +15,6 @@ int main(void) {
     struct Date *date;
     date = newDate();
     afficheDate(&d);
-    free(date);
+    free(date);  //des qu'il y a un malloc il faut un free
     return 0;
 }
