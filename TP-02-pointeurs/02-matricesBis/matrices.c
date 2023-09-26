@@ -54,5 +54,15 @@ void matrix_print(Matrice* mat) {
     printf("\n");
 }
 
+void detruire(Matrice* mat){
+    for (int i = 0; i < mat->nblignes; i++)
+  {
+    free((mat->valeurs)[i]);
+  }
+  free(mat->valeurs);
+  free(mat);
+  mat=NULL;
+
+}
 /*b. On peut la réutiliser en changeant la taille (SIZE), et vu qu'on a spécifier qu'une seule dimension, le code est déjà plus globale
 c. l'utilisateur peut saisir la taille au début, ou alor créer une matrice plus grace, la parcourir pour la réduire*/

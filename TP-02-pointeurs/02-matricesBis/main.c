@@ -14,4 +14,7 @@ initialiserLigne(2, 1, A);
 initialiserLigne(2, 2, B);
 C = multiplier(A, B);
 matrix_print(C);
+detruire(A);
+detruire(B);
+detruire(C); //desalouer les blocs, les adresse, la structure
 }
