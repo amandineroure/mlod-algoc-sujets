@@ -39,7 +39,7 @@ int numberOfWinners(FILE *filename) {
     return lines;
 }
 
-char *readStringFromFileUntil(FILE *fp, char delim){
+/*char *readStringFromFileUntil(FILE *fp, char delim){
     char *buffer = NULL;
     size_t bufferSize = 1024;
     int character;
@@ -71,11 +71,26 @@ char *readStringFromFileUntil(FILE *fp, char delim){
     }
 
     return buffer;
-}
+}*/
 
 TuringWinner* readWinner(FILE *f) {
+    TuringWinner *winner = malloc(sizeof(TuringWinner));
+    char *line = NULL;
+    size_t lineLength = 0;
 
+    // Utilise strtok pour diviser la ligne en trois parties (année, nom et description)
+    char *token = strtok(line, ";");
 
+    // Convertit l'année en entier
+    winner->year = atoi(token);
+
+    // Récupère le nom
+    strncpy(winner->name, token, sizeof(winner->name));
+
+    // Récupère la description
+    strncpy(winner->description, token, sizeof(winner->description));
+    free(line);
+    return winner;
 }
 
 void readWinners(TuringWinner *winner, FILE *f) {
@@ -102,7 +117,11 @@ int main(int argc, char** argv)
 	//copie(fpname, outputFilename);
     printf("%i", numberOfWinners(f));
 
-    TuringWinner turingWinner = readWinner(f);
+    TuringWinner *winner = readWinner(f);
+    if (winner != NULL) {
+        printf("Année : %d\n", winner->year);
+        printf("Nom : %s\n", winner->name);
+        printf("Description : %s\n", winner->description);}
     //turingWinner=...;
 
 	return EXIT_SUCCESS;
