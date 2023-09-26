@@ -3,57 +3,107 @@
  gcc --std=c99 -W -Wall -o prixTuring prixTuring.c
 
  Exécution
- ./prixTuring < turingWinners.txt > out.txt
+ ./prixTuring
 
  Tests
- diff out.txt turingWinners.txt
+ diff out.csv turingWinners.csv
 
- Détection de fuites mémoires
- valgrind --leak-check=yes --leak-check=full --show-leak-kinds=all --show-reachable=no ./prixTuring < turingWinners.txt > out.txt
 **/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+#include <errno.h>
+#include <assert.h>
 
-/* This function scans a line of text (until \n) and returns a char* that contains all characters on the line (up to 255) excluding \n.
-It also ensures the \0 termination.
-**WARNING**: The result of this function has been allocated (calloc) by the function */
-char* scanLine()
-{
-	int maxLineSize = 255;
-	char c, *line = calloc(maxLineSize+1,sizeof(char));
+typedef struct {
+unsigned int year;
+char* name;
+char* description; // on stocke l'adresse de la première case du tableau qui contient le nom du gagnant
+} TuringWinner ; 
 
-	scanf("%250[^\n]", line);
+//attribuer 1024 au buffer (tableau temporaire), getc, on  arrive au ; on stock le bon nombre
 
-	if ( (c = getchar()) != '\n') {
-		/* we did not get all the line */
-		line[250] = '[';
-		line[251] = line[252] = line[253] = '.';
-		line[254] = ']';
-		// line[255] = '\0'; // useless because already initialized by calloc
+int numberOfWinners(FILE *filename) {
+    if (filename==NULL)
+        return 0;
 
-		// let's skip all chars untli the end of line
-		while (( (c = getchar()) != '\n') && c != EOF) ;
-	}
+    int lines = 0;
+    char c;
 
-	return line;
+    while ((c = fgetc(filename)) != EOF) {
+        if (c == '\n') {
+            lines++;
+        }
+    }
+    return lines;
 }
 
-/* This function scans a line of text (until \n), converts it as an integer and returns this integer */
-int scanLineAsInt() {
-	int buf;
-	scanf("%i\n",&buf);
-	return buf;
+char *readStringFromFileUntil(FILE *fp, char delim){
+    char *buffer = NULL;
+    size_t bufferSize = 1024;
+    int character;
+    size_t length = 0;
+
+    while ((character = fgetc(fp)) != EOF && character != delim) {
+        if (length + 1 >= bufferSize) {
+            bufferSize *= 2; 
+            char *newBuffer = realloc(buffer, bufferSize);
+            if (newBuffer == NULL) {
+                free(buffer);
+                perror("Erreur lors de la réallocation de mémoire.");
+                return NULL;
+            }
+            buffer = newBuffer;
+        }
+        buffer[length++] = (char)character;
+    }
+
+    if (length > 0) {
+        buffer[length] = '\0';
+    } else {
+        buffer = malloc(1);
+        if (buffer == NULL) {
+            perror("Erreur lors de l'allocation de mémoire.");
+            return NULL;
+        }
+        buffer[0] = '\0';
+    }
+
+    return buffer;
 }
 
+TuringWinner* readWinner(FILE *f) {
 
-int main(void)
+
+}
+
+void readWinners(TuringWinner *winner, FILE *f) {
+    fscanf(f,"%i"";",&winner->year);
+    winner->name=readStringFromFileUntil(f,";");
+    winner->description=readStringFromFileUntil(f,"\n");
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// MAIN
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+int main(int argc, char** argv)
 {
+	char filename[] = "turingWinners.csv";
+	char outputFilename[] = "out.csv";
+    FILE* f;
+    FILE* of;
+    f = fopen(filename,"r");
+	of = fopen(outputFilename,"a");
 
-	int nbGagnants = scanLineAsInt();
-	printf("nbGagnants = %i\n",nbGagnants);
+    
+
+	//copie(fpname, outputFilename);
+    printf("%i", numberOfWinners(f));
+
+    TuringWinner turingWinner = readWinner(f);
+    //turingWinner=...;
 
 	return EXIT_SUCCESS;
 }
