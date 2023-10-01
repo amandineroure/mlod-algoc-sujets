@@ -75,9 +75,7 @@ TuringWinner *readWinner(TuringWinner *winner, FILE *f) {
 }
 
 void writeLine(TuringWinner *ligne, FILE *outputfile){
-	fprintf(outputfile, "%d;", ligne->year);
-	fprintf(outputfile, "%s;", ligne->name);
-	fprintf(outputfile, "%s\n", ligne->description);
+	fprintf(outputfile, "%d;%s;%s\n", ligne->year,ligne->name, ligne->description);
 }
 
 void delete(TuringWinner *ligne){
@@ -99,7 +97,7 @@ void printWinners(FILE* f, FILE *outputfile){
 }
 
 
-TuringWinner* searchLineByAnnee(FILE* f, int annee){
+void infoAnnee(FILE* f, int annee){
 	TuringWinner *ligne;
 	int nbWin = numberOfWinners(f);
 	for (int i = 0; i < nbWin; i++)
@@ -108,23 +106,15 @@ TuringWinner* searchLineByAnnee(FILE* f, int annee){
 		ligne=readWinner(winner, f);
 		if (ligne->year==annee)
 		{
-			return ligne;
+			printf("L'annee %i, le(s) gagnant(s) ont été : %s\nNature des travaux : %s\n", annee, ligne->name, ligne->description);
+			return;
 		}
 		delete(ligne);
 	}
-	return ligne;
+	printf("Aucune information pour cette année");
+	return;
 }
 
-void infoAnnee(FILE* f, int annee){
-	TuringWinner *ligne = searchLineByAnnee(f, annee);
-	if (ligne){
-	printf("L'annee %i, le(s) gagnant(s) ont été : %s\nNature des travaux : %s\n", annee, ligne->name, ligne->description);
-	delete(ligne);
-	}
-	else {
-		printf("Aucune information pour cette année");
-	}
-}
 
 int anneeMin(FILE *f, int yearAvant){
 	TuringWinner *ligne;
@@ -147,6 +137,22 @@ int anneeMin(FILE *f, int yearAvant){
 		delete(ligne);
 	}
 	return anneeMin;
+}
+
+TuringWinner *searchLineByAnnee(FILE* f, int annee){
+	TuringWinner *ligne;
+	int nbWin = numberOfWinners(f);
+	for (int i = 0; i < nbWin; i++)
+	{
+		TuringWinner *winner = (TuringWinner*) malloc(sizeof(TuringWinner));
+		ligne=readWinner(winner, f);
+		if (ligne->year==annee)
+		{
+			return ligne;
+		}
+		delete(ligne);
+	}
+	return ligne;
 }
 
 void sortTuringWinnersByYear(FILE *f, FILE *sortedfile){
