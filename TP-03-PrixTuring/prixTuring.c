@@ -40,18 +40,18 @@ int numberOfWinners(FILE *filename) {
     return lines;
 }
 
-char *readStringFromFileUntil(FILE *fp, char *delim){
+char *readStringFromFileUntil(FILE *fp, char delim){
     int car;
     char *buffer = (char*) calloc(1024, sizeof(char)); //on alloue une place de 1024 qu'on enlève après
     int taille=0 ;
 
     while ((car = fgetc(fp)) != EOF && taille<1024) {
-        if (car== *delim)
+        if (car== delim)
 		{
 			buffer[taille]='\0';
 			return buffer;
 		}
-		if (car != *delim)
+		if (car != delim)
 		{
 			buffer[taille]=car;
 			taille++;
@@ -68,9 +68,9 @@ char *readStringFromFileUntil(FILE *fp, char *delim){
 
 
 void readWinners(TuringWinner *winner, FILE *f) {
-    fscanf(f,"%i"";",&winner->year);
-    winner->name=readStringFromFileUntil(f, ";");
-    winner->description=readStringFromFileUntil(f, "\n");
+    fscanf(f,"%i",&winner->year);
+    winner->name=readStringFromFileUntil(f, ';');
+    winner->description=readStringFromFileUntil(f, '\n');
 }
 
 void writeLine(TuringWinner *ligne, FILE *outputfile){
@@ -156,7 +156,8 @@ void sortTuringWinnersByYear(FILE *f, FILE *sortedfile){
 		ligne=searchLineByAnnee(f, annee);
 		writeLine(ligne, sortedfile);
 		delete(ligne);
-		yearAvant= anneeMin(f, yearAvant); 
+		yearAvant= annee; 
+		annee=anneeMin(f, yearAvant);
 	}
 }
 
@@ -181,10 +182,10 @@ int main(int argc, char** argv)
 	sortedfile = fopen(sortedFile,"w");
 
 
-    printf("%i", numberOfWinners(f));
+    printf("%i\n", numberOfWinners(f));
     printWinners(f, outputfile);
 	sortTuringWinnersByYear(f, sortedfile);
-	infoAnnee(f, 2003);
+	infoAnnee(f, 2022);
 	sortTuringWinnersByYear(f, sortedfile);
 
 	fclose(f);
