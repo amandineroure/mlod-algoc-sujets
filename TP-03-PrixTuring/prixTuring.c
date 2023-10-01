@@ -67,10 +67,11 @@ char *readStringFromFileUntil(FILE *fp, char delim){
 }
 
 
-void readWinners(TuringWinner *winner, FILE *f) {
+TuringWinner *readWinner(TuringWinner *winner, FILE *f) {
     fscanf(f,"%i;",&winner->year);
     winner->name=readStringFromFileUntil(f, ';');
     winner->description=readStringFromFileUntil(f, '\n');
+	return winner;
 }
 
 void writeLine(TuringWinner *ligne, FILE *outputfile){
@@ -85,18 +86,13 @@ void delete(TuringWinner *ligne){
 	free(ligne);
 }
 
-TuringWinner* LigneWinner(FILE *f){
-	TuringWinner *ligne = (TuringWinner*) malloc(sizeof(TuringWinner));
-	readWinners(ligne, f);
-	return ligne;
-}
-
 void printWinners(FILE* f, FILE *outputfile){
 	TuringWinner *ligne;
 	int nbWin = numberOfWinners(f);
 	for (int i = 0; i < nbWin; i++)
 	{
-		ligne=LigneWinner(f);
+		TuringWinner *winner = (TuringWinner*) malloc(sizeof(TuringWinner));
+		ligne=readWinner(winner, f);
 		writeLine(ligne, outputfile);
 		delete(ligne);
 	}
@@ -108,7 +104,8 @@ TuringWinner* searchLineByAnnee(FILE* f, int annee){
 	int nbWin = numberOfWinners(f);
 	for (int i = 0; i < nbWin; i++)
 	{
-		ligne=LigneWinner(f);
+		TuringWinner *winner = (TuringWinner*) malloc(sizeof(TuringWinner));
+		ligne=readWinner(winner, f);
 		if (ligne->year==annee)
 		{
 			return ligne;
@@ -135,7 +132,8 @@ int anneeMin(FILE *f, int yearAvant){
 	int anneeMin = 9999;
 	for (int i = 0; i < nbWin; i++)
 	{
-		ligne=LigneWinner(f);
+		TuringWinner *winner = (TuringWinner*) malloc(sizeof(TuringWinner));
+		ligne=readWinner(winner, f);
 		if (yearAvant==0){
 			if (ligne->year<anneeMin){
 				anneeMin=ligne->year;
