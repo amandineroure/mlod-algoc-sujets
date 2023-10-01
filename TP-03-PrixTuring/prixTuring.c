@@ -17,7 +17,7 @@
 #include <assert.h>
 
 typedef struct {
-unsigned int year;
+int year;
 char* name;
 char* description; // on stocke l'adresse de la première case du tableau qui contient le nom du gagnant
 } TuringWinner ; 
@@ -40,25 +40,30 @@ int numberOfWinners(FILE *filename) {
     return lines;
 }
 
-char *readStringFromFileUntil(FILE *fp, char delim){
+char *readStringFromFileUntil(FILE *fp, char *delim){
     int car;
     char *buffer = (char*) calloc(1024, sizeof(char)); //on alloue une place de 1024 qu'on enlève après
     int taille=0 ;
 
     while ((car = fgetc(fp)) != EOF && taille<1024) {
-        if (car==delim)
+        if (car== *delim)
 		{
 			buffer[taille]='\0';
 			return buffer;
 		}
-		if (car != delim)
+		if (car != *delim)
 		{
 			buffer[taille]=car;
 			taille++;
 		}
   };
 	buffer[taille]='\0';
-    return buffer;
+	free(buffer);
+	char *result = (char*) calloc(taille, sizeof(char)); 
+	for (int i = 0; i <= taille; i++){
+		result[i]=buffer[i];
+	}
+    return result;
 }
 
 
@@ -119,16 +124,22 @@ void infoAnnee(FILE* f, int annee){
 	delete(ligne);
 }
 
-int anneeMin(FILE *f){
+int anneeMin(FILE *f, int yearAvant){
 	TuringWinner *ligne;
 	int nbWin = numberOfWinners(f);
-	int anneeMin = 3000;
+	int anneeMin = 9999;
 	for (int i = 0; i < nbWin; i++)
 	{
 		ligne=LigneWinner(f);
-		if (ligne->year<anneeMin)
-		{
-			anneeMin=ligne->year;
+		if (yearAvant==0){
+			if (ligne->year<anneeMin){
+				anneeMin=ligne->year;
+			}
+		}
+		if (ligne->year>yearAvant){
+			if (ligne->year<anneeMin){
+				anneeMin=ligne->year;
+			}
 		}
 		delete(ligne);
 	}
@@ -138,13 +149,14 @@ int anneeMin(FILE *f){
 void sortTuringWinnersByYear(FILE *f, FILE *sortedfile){
 	TuringWinner *ligne;
 	int nbWin = numberOfWinners(f);
-	int annee = anneeMin(f);
+	int yearAvant=0;
+	int annee = anneeMin(f, yearAvant);
 	for (int i = 0; i < nbWin; i++)
 	{
 		ligne=searchLineByAnnee(f, annee);
 		writeLine(ligne, sortedfile);
 		delete(ligne);
-		annee++; //On suppose que un prix est gagné chaque année ici
+		yearAvant= anneeMin(f, yearAvant); 
 	}
 }
 
@@ -173,7 +185,7 @@ int main(int argc, char** argv)
     printWinners(f, outputfile);
 	sortTuringWinnersByYear(f, sortedfile);
 	infoAnnee(f, 2003);
-	sortTuringWinnersByYear(outputfile, sortedfile);
+	sortTuringWinnersByYear(f, sortedfile);
 
 	fclose(f);
 	fclose(outputfile);
