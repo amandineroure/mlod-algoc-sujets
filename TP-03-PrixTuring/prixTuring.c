@@ -25,6 +25,7 @@ char* description; // on stocke l'adresse de la première case du tableau qui co
 //attribuer 1024 au buffer (tableau temporaire), getc, on  arrive au ; on stock le bon nombre
 
 int numberOfWinners(FILE *filename) {
+	rewind(filename);
     if (filename==NULL)
         return 0;
 
@@ -39,65 +40,117 @@ int numberOfWinners(FILE *filename) {
     return lines;
 }
 
-/*char *readStringFromFileUntil(FILE *fp, char delim){
-    char *buffer = NULL;
-    size_t bufferSize = 1024;
-    int character;
-    size_t length = 0;
+char *readStringFromFileUntil(FILE *fp, char delim){
+    int car;
+    char *buffer = (char*) calloc(1024, sizeof(char)); //on alloue une place de 1024 qu'on enlève après
+    int taille=0 ;
 
-    while ((character = fgetc(fp)) != EOF && character != delim) {
-        if (length + 1 >= bufferSize) {
-            bufferSize *= 2; 
-            char *newBuffer = realloc(buffer, bufferSize);
-            if (newBuffer == NULL) {
-                free(buffer);
-                perror("Erreur lors de la réallocation de mémoire.");
-                return NULL;
-            }
-            buffer = newBuffer;
-        }
-        buffer[length++] = (char)character;
-    }
-
-    if (length > 0) {
-        buffer[length] = '\0';
-    } else {
-        buffer = malloc(1);
-        if (buffer == NULL) {
-            perror("Erreur lors de l'allocation de mémoire.");
-            return NULL;
-        }
-        buffer[0] = '\0';
-    }
-
+    while ((car = fgetc(fp)) != EOF && taille<1024) {
+        if (car==delim)
+		{
+			buffer[taille]='\0';
+			return buffer;
+		}
+		if (car != delim)
+		{
+			buffer[taille]=car;
+			taille++;
+		}
+  };
+	buffer[taille]='\0';
     return buffer;
-}*/
-
-TuringWinner* readWinner(FILE *f) {
-    TuringWinner *winner = malloc(sizeof(TuringWinner));
-    char *line = NULL;
-    size_t lineLength = 0;
-
-    // Utilise strtok pour diviser la ligne en trois parties (année, nom et description)
-    char *token = strtok(line, ";");
-
-    // Convertit l'année en entier
-    winner->year = atoi(token);
-
-    // Récupère le nom
-    strncpy(winner->name, token, sizeof(winner->name));
-
-    // Récupère la description
-    strncpy(winner->description, token, sizeof(winner->description));
-    free(line);
-    return winner;
 }
+
 
 void readWinners(TuringWinner *winner, FILE *f) {
     fscanf(f,"%i"";",&winner->year);
-    winner->name=readStringFromFileUntil(f,";");
-    winner->description=readStringFromFileUntil(f,"\n");
+    winner->name=readStringFromFileUntil(f, ";");
+    winner->description=readStringFromFileUntil(f, "\n");
 }
+
+void writeLine(TuringWinner *ligne, FILE *outputfile){
+	fprintf(outputfile, "%d;", ligne->year);
+	fprintf(outputfile, "%s;", ligne->name);
+	fprintf(outputfile, "%s\n", ligne->description);
+}
+
+void delete(TuringWinner *ligne){
+	free(ligne->name);	
+	free(ligne->description);
+	free(ligne);
+}
+
+TuringWinner* LigneWinner(FILE *f){
+	TuringWinner *ligne = (TuringWinner*) malloc(sizeof(TuringWinner));
+	readWinners(ligne, f);
+	return ligne;
+}
+
+void printWinners(FILE* f, FILE *outputfile){
+	TuringWinner *ligne;
+	int nbWin = numberOfWinners(f);
+	for (int i = 0; i < nbWin; i++)
+	{
+		ligne=LigneWinner(f);
+		writeLine(ligne, outputfile);
+		delete(ligne);
+	}
+}
+
+
+TuringWinner* searchLineByAnnee(FILE* f, int annee){
+	TuringWinner *ligne;
+	int nbWin = numberOfWinners(f);
+	for (int i = 0; i < nbWin; i++)
+	{
+		ligne=LigneWinner(f);
+		if (ligne->year==annee)
+		{
+			return ligne;
+		}
+		delete(ligne);
+	}
+	return ligne;
+}
+
+void infoAnnee(FILE* f, int annee){
+	TuringWinner *ligne = searchLineByAnnee(f, annee);
+	printf("L'annee %i, le(s) gagnant(s) ont été : %s\nNature des travaux : %s\n", annee, ligne->name, ligne->description);
+	delete(ligne);
+}
+
+int anneeMin(FILE *f){
+	TuringWinner *ligne;
+	int nbWin = numberOfWinners(f);
+	int anneeMin = 3000;
+	for (int i = 0; i < nbWin; i++)
+	{
+		ligne=LigneWinner(f);
+		if (ligne->year<anneeMin)
+		{
+			anneeMin=ligne->year;
+		}
+		delete(ligne);
+	}
+	return anneeMin;
+}
+
+void sortTuringWinnersByYear(FILE *f, FILE *sortedfile){
+	TuringWinner *ligne;
+	int nbWin = numberOfWinners(f);
+	int annee = anneeMin(f);
+	for (int i = 0; i < nbWin; i++)
+	{
+		ligne=searchLineByAnnee(f, annee);
+		writeLine(ligne, sortedfile);
+		delete(ligne);
+		annee++; //On suppose que un prix est gagné chaque année ici
+	}
+}
+
+
+
+
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // MAIN
@@ -107,22 +160,24 @@ int main(int argc, char** argv)
 {
 	char filename[] = "turingWinners.csv";
 	char outputFilename[] = "out.csv";
+	char sortedFile[] = "sortedWinners.csv";
     FILE* f;
-    FILE* of;
+	FILE* outputfile;
+	FILE* sortedfile;
     f = fopen(filename,"r");
-	of = fopen(outputFilename,"a");
+	outputfile = fopen(outputFilename,"w");
+	sortedfile = fopen(sortedFile,"w");
 
-    
 
-	//copie(fpname, outputFilename);
     printf("%i", numberOfWinners(f));
+    printWinners(f, outputfile);
+	sortTuringWinnersByYear(f, sortedfile);
+	infoAnnee(f, 2003);
+	sortTuringWinnersByYear(outputfile, sortedfile);
 
-    TuringWinner *winner = readWinner(f);
-    if (winner != NULL) {
-        printf("Année : %d\n", winner->year);
-        printf("Nom : %s\n", winner->name);
-        printf("Description : %s\n", winner->description);}
-    //turingWinner=...;
+	fclose(f);
+	fclose(outputfile);
+	fclose(sortedfile);
 
 	return EXIT_SUCCESS;
 }
