@@ -115,13 +115,18 @@ TuringWinner* searchLineByAnnee(FILE* f, int annee){
 		}
 		delete(ligne);
 	}
-	return ligne;
+	return NULL;
 }
 
 void infoAnnee(FILE* f, int annee){
 	TuringWinner *ligne = searchLineByAnnee(f, annee);
+	if (ligne->name){
 	printf("L'annee %i, le(s) gagnant(s) ont été : %s\nNature des travaux : %s\n", annee, ligne->name, ligne->description);
 	delete(ligne);
+	}
+	else {
+		printf("Aucune information pour cette année");
+	}
 }
 
 int anneeMin(FILE *f, int yearAvant){
