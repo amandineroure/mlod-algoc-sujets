@@ -68,7 +68,7 @@ char *readStringFromFileUntil(FILE *fp, char delim){
 
 
 void readWinners(TuringWinner *winner, FILE *f) {
-    fscanf(f,"%i",&winner->year);
+    fscanf(f,"%i;",&winner->year);
     winner->name=readStringFromFileUntil(f, ';');
     winner->description=readStringFromFileUntil(f, '\n');
 }
@@ -150,14 +150,16 @@ void sortTuringWinnersByYear(FILE *f, FILE *sortedfile){
 	TuringWinner *ligne;
 	int nbWin = numberOfWinners(f);
 	int yearAvant=0;
+	int *pointyear=&yearAvant;
 	int annee = anneeMin(f, yearAvant);
+	int *pointannee=&annee;
 	for (int i = 0; i < nbWin; i++)
 	{
 		ligne=searchLineByAnnee(f, annee);
 		writeLine(ligne, sortedfile);
 		delete(ligne);
-		yearAvant= annee; 
-		annee=anneeMin(f, yearAvant);
+		*pointyear= *pointannee; 
+		*pointannee=anneeMin(f, yearAvant);
 	}
 }
 
