@@ -48,8 +48,10 @@ char *readStringFromFileUntil(FILE *fp, char delim){
     while ((car = fgetc(fp)) != EOF && taille<1024) {
         if (car== delim)
 		{
-			buffer[taille]='\0';
-			return buffer;
+			if (taille>0){ //peut commencer par ;
+				buffer[taille]='\0';
+				return buffer;
+			}
 		}
 		if (car != delim)
 		{
@@ -58,12 +60,7 @@ char *readStringFromFileUntil(FILE *fp, char delim){
 		}
   };
 	buffer[taille]='\0';
-	char *result = (char*) calloc(taille, sizeof(char)); 
-	for (int i = 0; i <= taille; i++){
-		result[i]=buffer[i];
-	}
-	free(buffer);
-    return result;
+    return buffer;
 }
 
 
