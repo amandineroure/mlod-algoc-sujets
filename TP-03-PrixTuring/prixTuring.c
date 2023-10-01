@@ -29,15 +29,15 @@ int numberOfWinners(FILE *filename) {
     if (filename==NULL)
         return 0;
 
-    int lines = 0;
+    int nblines = 0;
     char c;
 
     while ((c = fgetc(filename)) != EOF) {
         if (c == '\n') {
-            lines++;
+            nblines++;
         }
     }
-    return lines;
+    return nblines;
 }
 
 char *readStringFromFileUntil(FILE *fp, char delim){
@@ -58,11 +58,11 @@ char *readStringFromFileUntil(FILE *fp, char delim){
 		}
   };
 	buffer[taille]='\0';
-	free(buffer);
 	char *result = (char*) calloc(taille, sizeof(char)); 
 	for (int i = 0; i <= taille; i++){
 		result[i]=buffer[i];
 	}
+	free(buffer);
     return result;
 }
 
@@ -115,12 +115,12 @@ TuringWinner* searchLineByAnnee(FILE* f, int annee){
 		}
 		delete(ligne);
 	}
-	return NULL;
+	return ligne;
 }
 
 void infoAnnee(FILE* f, int annee){
 	TuringWinner *ligne = searchLineByAnnee(f, annee);
-	if (ligne->name){
+	if (ligne){
 	printf("L'annee %i, le(s) gagnant(s) ont été : %s\nNature des travaux : %s\n", annee, ligne->name, ligne->description);
 	delete(ligne);
 	}
