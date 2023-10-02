@@ -7,7 +7,7 @@
 
 int main(void){
 	Liste l, p;
-	
+
 	l = NULL;
 	printf("estVide(l) = %s\n",estVide(l)?"TRUE":"FALSE");
 	
@@ -76,6 +76,8 @@ int main(void){
 	printf("retirePremier_r(99)  : ");
 	l = retirePremier_r(99,l);
 	afficheListe_r(l);
+
+	afficheEnvers_r(l);
 
 	detruire_r(l);
 

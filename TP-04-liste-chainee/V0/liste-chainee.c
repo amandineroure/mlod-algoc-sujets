@@ -132,19 +132,56 @@ Liste cherche_r(Element v,Liste l) {
 // ne fait rien si aucun élément possède cette valeur
 // version itérative
 Liste retirePremier_i(Element v, Liste l) {
-	
-	return TODO;
+	if (estVide(l))
+	{
+		return l;
+	}
+	if (equalsElement(l->val,v))
+	{
+		l = l->suiv;
+		return l;
+	}
+	Liste actuel = l;
+	Liste suivant = l->suiv;
+	while (!estVide(suivant))
+	{
+		if (equalsElement(v, suivant->val))
+		{
+			actuel->suiv=suivant->suiv;
+			return l;
+		}		
+		actuel=suivant;
+		suivant=suivant->suiv;
+	}	
+	return l;
 }
 
 
 // version recursive
 Liste retirePremier_r(Element v, Liste l) {
-	return TODO;
+	if (!estVide(l))
+	{
+		if (equalsElement(v,l->val))
+		{
+			l=l->suiv;
+			return l;
+		}
+		else
+		{
+			l->suiv=retirePremier_r(v, l->suiv);
+		}		
+	}
+	return l;
 }
+ 
 
 
 void afficheEnvers_r(Liste l) {
-	TODO;
+	if (!estVide(l))
+	{
+		afficheEnvers_r(l->suiv);
+		afficheElement(l->val);
+	}
 }
 
 
