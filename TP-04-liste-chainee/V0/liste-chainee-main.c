@@ -7,10 +7,10 @@
 
 int main(void){
 	Liste l, p;
-
+	
 	l = NULL;
 	printf("estVide(l) = %s\n",estVide(l)?"TRUE":"FALSE");
-
+	
 	l = ajoutTete(1,l);
 	l = ajoutTete(2,l);
 	l = ajoutTete(4,l);
