@@ -124,7 +124,7 @@ Liste cherche_r(Element v,Liste l) {
 		return l;
 	}
 	else{
-		cherche_r(v, l->suiv);
+		return cherche_r(v, l->suiv);
 	}
 }
 
