@@ -9,7 +9,7 @@ void afficheElement(Element e) {
 }
 
 void detruireElement(Element e) {
-	free(e);
+	//free(e);
 }
 
 // compare deux elements
