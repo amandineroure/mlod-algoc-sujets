@@ -1,4 +1,4 @@
-// gcc -W -Wall -Wextra -std=c99 arbre-bin-recherche.c arbre-bin-recherche-main.c
+// gcc -W -Wall -Wextra -std=c99 arbre-bin-recherche.c main.c
 
 // gcc -W -Wall -Wextra -std=c99 arbre-bin-recherche-correction.c arbre-bin-recherche-main.c
 
