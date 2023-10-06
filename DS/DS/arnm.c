@@ -23,13 +23,11 @@ typedef struct {
 // = Fonctions =
 // =============
 
-int* statistics(char c[]){
-	int *tab = (int*)malloc
-	int tab[4]={0,0,0,0};
-	int *p=&tab;
-	int i=0;
-	char m=c[i];
-	while (m!='\0'){	
+int* statistics(char* c){
+	int n = strlen(c);
+	int* tab= calloc(sizeof(int), 4);
+	for(int i=0; i<n; i++){
+		char m=c[i];
 		if (m=='A'){
 			tab[0]+=1;
 		}
@@ -42,10 +40,11 @@ int* statistics(char c[]){
 		else if (m=='G'){
 			tab[3]+=1;
 		}
-		i++;
-		m=c[i];
 	}
-	return p;
+	for(int i=0; i<4; i++){
+		tab[i] = (tab[i]*100)/n;
+	}
+	return tab;
 }
 
 
@@ -69,32 +68,34 @@ int distanceBetweenNucleotides(char n1, char n2) {
     return indexOf(n1)-indexOf(n2);
 }
 
-typeDifference** computeDifferencesBetween(char s1[], char s2[]){
-	typeDifference **td=(typeDifference**)calloc(len(s1), sizeof(typeDifference*));
+typeDifference** computeDifferencesBetween(const char s1[], const char s2[]){
+	int n =strlen(s1);
 	int taille=0;
-	int i=0;
-	char m=s1[i];
-	while(m!='\0'){
+	for (int i=0; i<n;i++){
 		char m=s1[i];
 		char n=s2[i];
 		if (m!=n){
-			typeDifference *tab=(typeDifference*)malloc(sizeof(typeDifference));
-			tab->index=i;
-			tab->distance = distanceBetweenNucleotides(m, n);
-			td[taille]=tab;	
+			taille++;
 		}
-	i++;
-		
 	}
 	typeDifference **result=(typeDifference**)calloc(taille, sizeof(typeDifference*));
-	for (int j=0; j<taille;j++){
-		result[j]=td[j];
+	int index_diff=0;
+	for(int i=0; i<n; i++){
+		char m=s1[i];
+		char n=s2[i];
+		if (m!=n){
+			result[index_diff]->index=i;
+			result[index_diff]->distance = distanceBetweenNucleotides(n, m);
+			index_diff++;
+		}
+
 	}
 	return result;
 }
 
+
 void printDifference(typeDifference **tab){
-	int n=len(*tab);
+	int n=strlen(*tab);
 	printf("Les différences sont : \n");
 	for (int i=0;i<n;i++){
 		int ind = tab[i]->index;
@@ -111,9 +112,9 @@ void printDifference(typeDifference **tab){
 int main(void){
 
 	char sequenceDeNucleotides[]="ATGCATCCATCATGCATGTA";
-
-    printf("%s\n",code_proteine_spike_moderna);
-
+    //printf("%s\n",code_proteine_spike_moderna);
+	typeDifference **dif=computeDifferenceBetween(code_proteine_spike_pfizer[], code_proteine_spike_moderna[]);
+	printDifference(dif);
 	return EXIT_SUCCESS;
 }
 
