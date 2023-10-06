@@ -27,11 +27,18 @@ size_t list_count(const List *list) {
 
 // inserts item_data at *end* of a list
 void list_addlast(List *list, data_t item_data) {
-    ListNode *t=list->last;
-    ListNode *p=((list->last)->next);
-    p->data=item_data;
-    p->prev=t;
-    p->next=NULL;
+    ListNode *p = listNode_create(item_data);
+    if (list_count(list)==0)
+    {
+        list->first=p;
+    }
+    else
+    {
+        ListNode *formerLast = list->last;
+        formerLast->next=p;
+        p->prev=formerLast;
+    }
+    list->last=p;
 }
 
 // removes the item from *end* of the list and returns its value
@@ -59,8 +66,8 @@ void detruire(List *l){
     while (el!=NULL){
         ListNode *g=p;
         free(p->data);
-        free(p);
-        p=g->next;
+        free(p->prev);
+        p=p->next;
         el=p->data;
     }
 }
