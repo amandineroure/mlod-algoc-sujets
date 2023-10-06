@@ -27,13 +27,42 @@ size_t list_count(const List *list) {
 
 // inserts item_data at *end* of a list
 void list_addlast(List *list, data_t item_data) {
-
+    ListNode *t=list->last;
+    ListNode *p=((list->last)->next);
+    p->data=item_data;
+    p->prev=t;
+    p->next=NULL;
 }
 
 // removes the item from *end* of the list and returns its value
 data_t list_rmlast(List *list) {
+    ListNode *t=list->last;
+    ListNode *p=((list->last)->prev);
+    t=p;
+    p->next=NULL;
+    return list;
+}
 
-    return -1;
+void list_print(List *l){
+    ListNode *p=l->first;
+    int el=(l->first)->data;
+    while (el!=NULL){
+        printf("%d", el);
+        p=p->next;
+        el=p->data;
+    }
+}
+
+void detruire(List *l){
+    ListNode *p=l->first;
+    int el=(l->first)->data;
+    while (el!=NULL){
+        ListNode *g=p;
+        free(p->data);
+        free(p);
+        p=g->next;
+        el=p->data;
+    }
 }
 
 
@@ -57,6 +86,7 @@ int main(void) {
 
     assert(t==40);
     list_print(l);
+    detruire(l);
 
     return 0;
 }
