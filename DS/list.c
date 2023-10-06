@@ -25,19 +25,15 @@ size_t list_count(const List *list) {
     return count;
 }
 
+ListNode_createEl(data_t data)
+
 // inserts item_data at *end* of a list
 void list_addlast(List *list, data_t item_data) {
-    ListNode *p = listNode_create(item_data);
-    if (list_count(list)==0)
-    {
-        list->first=p;
-    }
-    else
-    {
+    ListNode *p = list_createEl(data);
+    
         ListNode *formerLast = list->last;
         formerLast->next=p;
         p->prev=formerLast;
-    }
     list->last=p;
 }
 
