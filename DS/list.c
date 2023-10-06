@@ -25,10 +25,12 @@ size_t list_count(const List *list) {
     return count;
 }
 
-ListNode_createEl(data_t data)
+ListNode_createEl(data_t data){
+
+}
 
 // inserts item_data at *end* of a list
-void list_addlast(List *list, data_t item_data) {
+void list_addlast(List *list, data_t data) {
     ListNode *p = list_createEl(data);
     
         ListNode *formerLast = list->last;
