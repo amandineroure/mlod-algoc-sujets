@@ -26,7 +26,11 @@ size_t list_count(const List *list) {
 }
 
 ListNode_createEl(data_t data){
-
+    List *l = malloc(sizeof(List));
+    l->first->data = data;
+    l->first->next=NULL;
+    l->last=l->first;
+    return l;
 }
 
 // inserts item_data at *end* of a list
